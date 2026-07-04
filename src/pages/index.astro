@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+
+const products = await getCollection('products');
+const categories = ['清洁', '补水', '防晒', '抗衰'];
+---
+
+<Layout title="buweihao | 电商护肤产品展示站" description="buweihao 提供清洁、补水、防晒、抗衰护肤产品展示与轻定制合作信息。">
+  <section class="bg-white">
+    <div class="container grid min-h-[calc(100vh-64px)] items-center gap-10 py-12 md:grid-cols-[0.95fr_1.05fr]">
+      <div>
+        <p class="eyebrow">Ecommerce skincare showcase</p>
+        <h1 class="mt-4 max-w-3xl text-5xl font-black leading-tight text-ink md:text-6xl">buweihao</h1>
+        <p class="mt-5 max-w-2xl text-xl leading-8 text-muted">围绕清洁、补水、防晒、抗衰四大方向，为电商渠道展示可组合、可定制、便于询盘的护肤产品线。</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a class="button" href="/products/">查看产品</a>
+          <a class="button secondary" href="/contact/">联系合作</a>
+        </div>
+      </div>
+      <img class="aspect-[4/3] w-full rounded-[8px] object-cover shadow-2xl shadow-herb/15" src="/uploads/products/buweihao-skincare-line.png" alt="buweihao 护肤产品线" />
+    </div>
+  </section>
+
+  <section class="section bg-mist">
+    <div class="container">
+      <p class="eyebrow">Categories</p>
+      <h2 class="mt-3 text-3xl font-black md:text-4xl">清晰的产品分类，适合快速选品</h2>
+      <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {categories.map((category) => <a class="rounded-[8px] bg-white p-6 text-2xl font-black text-ink no-underline shadow-sm transition hover:-translate-y-1 hover:shadow-lg" href={`/products/?category=${encodeURIComponent(category)}`}>{category}</a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-paper">
+    <div class="container">
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p class="eyebrow">Featured products</p>
+          <h2 class="mt-3 text-3xl font-black md:text-4xl">主推产品</h2>
+        </div>
+        <a class="button secondary" href="/products/">全部产品</a>
+      </div>
+      <div class="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+        {products.map((product) => (
+          <a class="rounded-[8px] bg-white p-4 text-ink no-underline shadow-sm transition hover:-translate-y-1 hover:shadow-lg" href={`/products/${product.id}/`}>
+            <img class="aspect-[4/3] rounded-[6px] object-cover" src={product.data.image} alt={product.data.title} />
+            <p class="mt-4 text-sm font-bold text-herb">{product.data.category}</p>
+            <h3 class="mt-1 text-xl font-black">{product.data.title}</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">{product.data.summary}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

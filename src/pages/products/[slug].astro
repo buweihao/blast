@@ -1,0 +1,60 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((product) => ({
+    params: { slug: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { Content } = await render(product);
+---
+
+<Layout title={`${product.data.title} | buweihao`} description={product.data.summary}>
+  <section class="section bg-white">
+    <div class="container grid gap-10 lg:grid-cols-[0.9fr_1.1fr]">
+      <img class="aspect-[4/3] w-full rounded-[8px] object-cover shadow-xl shadow-herb/10" src={product.data.image} alt={product.data.title} />
+      <div>
+        <p class="eyebrow">{product.data.category}</p>
+        <h1 class="mt-3 text-4xl font-black md:text-5xl">{product.data.title}</h1>
+        <p class="mt-4 text-xl leading-8 text-muted">{product.data.summary}</p>
+        <div class="mt-6 grid gap-3 sm:grid-cols-2">
+          <div class="rounded-[8px] bg-mist p-4"><strong>起订量</strong><p class="mt-1 text-muted">{product.data.moq}</p></div>
+          <div class="rounded-[8px] bg-mist p-4"><strong>交付周期</strong><p class="mt-1 text-muted">{product.data.leadTime}</p></div>
+        </div>
+        <p class="mt-5 rounded-[8px] border border-ink/10 p-4 text-muted">{product.data.certification}</p>
+        <a class="button mt-6" href="/contact/">询问合作</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-paper">
+    <div class="container grid gap-8 md:grid-cols-3">
+      <div class="md:col-span-1">
+        <p class="eyebrow">Details</p>
+        <h2 class="mt-3 text-3xl font-black">产品说明</h2>
+      </div>
+      <div class="md:col-span-2">
+        <div class="prose max-w-none text-muted"><Content /></div>
+        <div class="mt-8 grid gap-5 sm:grid-cols-2">
+          <div class="rounded-[8px] bg-white p-6">
+            <h3 class="m-0 text-xl font-black">规格亮点</h3>
+            <ul class="mt-4 space-y-2 text-muted">
+              {product.data.specs.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+          <div class="rounded-[8px] bg-white p-6">
+            <h3 class="m-0 text-xl font-black">适用场景</h3>
+            <ul class="mt-4 space-y-2 text-muted">
+              {product.data.applications.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
